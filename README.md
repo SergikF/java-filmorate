@@ -1,2 +1,7 @@
-# java-filmorate
-Template repository for Filmorate project.
+_java-filmorate_
+
+# Рейтинг фильмов
+### Согласно задания спринта № 10
+## выполнено Филипповских Сергеем
+
+_**Когорта-53**_
