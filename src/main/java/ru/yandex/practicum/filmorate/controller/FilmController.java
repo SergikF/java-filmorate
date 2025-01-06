@@ -70,10 +70,10 @@ public class FilmController {
         if (newFilm.getDescription().length() > 200) {
             throw new ValidationException("Максимальная длина описания фильма - 200 символов");
         }
-        if (newFilm.getDuration() < 1 ) {
+        if (newFilm.getDuration() < 1) {
             throw new ValidationException("Продолжительность фильма должна быть больше 1 секунды");
         }
-        if (newFilm.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))  ) {
+        if (newFilm.getReleaseDate().isBefore(LocalDate.parse("1895-12-28"))) {
             throw new ValidationException("Минимальная дата выхода фильма 28.12.1895");
         }
     }
