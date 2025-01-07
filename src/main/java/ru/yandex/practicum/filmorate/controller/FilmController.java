@@ -63,7 +63,7 @@ public class FilmController {
     }
 
     // вспомогательный метод для проверки условий фильма
-    private void checkFilm(@RequestBody @Valid Film newFilm) {
+    private void checkFilm(Film newFilm) {
         if (newFilm.getName() == null || newFilm.getName().isBlank()) {
             throw new ValidationException("Название фильма не может быть пустым");
         }

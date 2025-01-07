@@ -34,6 +34,9 @@ public class UserController {
         }
         checkUser(user);
         // формируем дополнительные данные
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         user.setId(getNextId());
         // сохраняем нового пользователя
         users.put(user.getId(), user);
@@ -67,6 +70,9 @@ public class UserController {
                     throw new ValidationException("Этот email уже используется");
                 }
             }
+            if (newUser.getName() == null || newUser.getName().isBlank()) {
+                newUser.setName(newUser.getLogin());
+            }
             users.put(newUser.getId(), newUser);
             return newUser;
         }
@@ -74,7 +80,7 @@ public class UserController {
     }
 
     // вспомогательный метод для проверки данных условий пользователя
-    private void checkUser(@RequestBody @Valid User user) {
+    private void checkUser(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("Email должен быть указан корректно");
         }
@@ -83,9 +89,6 @@ public class UserController {
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("День рождения не должен быть позже текущей даты");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
         }
     }
 }
