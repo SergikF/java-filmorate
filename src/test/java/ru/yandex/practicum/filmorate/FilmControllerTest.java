@@ -2,25 +2,24 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
-
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
-    private FilmController filmController;
+    private InMemoryFilmStorage filmController;
 
     private Film film;
 
     @BeforeEach
     void setUp() {
-        filmController = new FilmController();
+        filmController = new InMemoryFilmStorage();
         film = new Film();
         film.setName("Test Film");
         film.setDescription("Test description");
@@ -88,7 +87,7 @@ class FilmControllerTest {
     @Test
     void updateWithInvalidId() {
         Film newFilm = new Film();
-        newFilm.setId(1L);
+        newFilm.setId(1);
         assertThrows(ValidationException.class, () -> filmController.update(newFilm));
     }
 

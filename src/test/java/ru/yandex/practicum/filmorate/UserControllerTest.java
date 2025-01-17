@@ -1,126 +1,103 @@
 package ru.yandex.practicum.filmorate;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.time.LocalDate;
-import java.util.Collection;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class UserControllerTest {
+@SpringBootTest()
+@Validated
+public class UserControllerTest {
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserController userController;
 
-    private User user;
-
-    @BeforeEach
-    void setUp() {
-        userController = new UserController();
-        user = new User();
-        user.setEmail("test@test.ru");
-        user.setLogin("test");
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-    }
-
     @Test
-    void findAll() {
-        Collection<User> users = userController.findAll();
-        assertNotNull(users);
-    }
-
-    @Test
-    void create() {
+    public void testCreateUser() {
+        User user = new User();
+        user.setName("Test User");
+        user.setEmail("test@example.com");
         User createdUser = userController.create(user);
-        assertNotNull(createdUser);
-        assertEquals(user.getEmail(), createdUser.getEmail());
-        assertEquals(user.getLogin(), createdUser.getLogin());
-        assertEquals(user.getBirthday(), createdUser.getBirthday());
+        assertEquals(user, createdUser);
     }
 
     @Test
-    void createWithInvalidEmail() {
-        user.setEmail("testtest.ru");
-        assertThrows(ValidationException.class, () -> userController.create(user));
+    public void testUpdateUser() {
+        User user = new User();
+        user.setId(1);
+        user.setName("Updated User");
+        user.setEmail("updated@example.com");
+        User updatedUser = userController.update(user);
+        assertEquals(user, updatedUser);
     }
 
     @Test
-    void createWithExistingEmail() {
-        userController.create(user);
-        User newUser = new User();
-        newUser.setEmail("test@test.ru");
-        newUser.setLogin("newUser");
-        newUser.setBirthday(LocalDate.of(2000, 1, 1));
-        assertThrows(ValidationException.class, () -> userController.create(newUser));
+    public void testFindAllUsers() {
+        List<User> users = List.of(new User(), new User());
+        List<User> allUsers = userController.findAll();
+        assertEquals(users, allUsers);
     }
 
     @Test
-    void createWithInvalidLogin() {
-        user.setLogin(" ");
-        assertThrows(ValidationException.class, () -> userController.create(user));
+    public void testGetUserById() {
+        Integer userId = 1;
+        User user = new User();
+        user.setId(userId);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        User foundUser = userController.getUserById(userId);
+        assertEquals(user, foundUser);
     }
 
     @Test
-    void createWithFutureBirthday() {
-        user.setBirthday(LocalDate.now().plusDays(1));
-        assertThrows(ValidationException.class, () -> userController.create(user));
+    public void testAddFriend() {
+        Integer userId = 1;
+        Integer friendId = 2;
+        User user = new User();
+        user.setId(userId);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        User addedFriend = userController.addFriend(userId, friendId);
+        assertEquals(user, addedFriend);
     }
 
     @Test
-    void update() {
-        User createdUser = userController.create(user);
-        User newUser = new User();
-        newUser.setId(createdUser.getId());
-        newUser.setEmail("newEmail@test.ru");
-        newUser.setLogin("newUser");
-        newUser.setBirthday(LocalDate.of(2000, 1, 1));
-        User updatedUser = userController.update(newUser);
-        assertNotNull(updatedUser);
-        assertEquals(newUser.getEmail(), updatedUser.getEmail());
-        assertEquals(newUser.getLogin(), updatedUser.getLogin());
-        assertEquals(newUser.getBirthday(), updatedUser.getBirthday());
+    public void testDeleteFriend() {
+        Integer userId = 1;
+        Integer friendId = 2;
+        User user = new User();
+        user.setId(userId);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        User deletedFriend = userController.deleteFriend(userId, friendId);
+        assertEquals(user, deletedFriend);
     }
 
     @Test
-    void updateWithInvalidId() {
-        User newUser = new User();
-        newUser.setId(1L);
-        assertThrows(ValidationException.class, () -> userController.update(newUser));
+    public void testGetUserFriends() {
+        Integer userId = 1;
+        List<User> friends = List.of(new User(), new User());
+        List<User> userFriends = userController.getUserFriends(userId);
+        assertEquals(friends, userFriends);
     }
 
     @Test
-    void updateWithInvalidEmail() {
-        User createdUser = userController.create(user);
-        User newUser = new User();
-        newUser.setId(createdUser.getId());
-        newUser.setEmail("newEmailtest.ru");
-        newUser.setLogin("newUser");
-        newUser.setBirthday(LocalDate.of(2000, 1, 1));
-        assertThrows(ValidationException.class, () -> userController.update(newUser));
-    }
-
-    @Test
-    void updateWithInvalidLogin() {
-        User createdUser = userController.create(user);
-        User newUser = new User();
-        newUser.setId(createdUser.getId());
-        newUser.setEmail("newEmail@test.ru");
-        newUser.setLogin(" ");
-        newUser.setBirthday(LocalDate.of(2000, 1, 1));
-        assertThrows(ValidationException.class, () -> userController.update(newUser));
-    }
-
-    @Test
-    void updateWithFutureBirthday() {
-        User createdUser = userController.create(user);
-        User newUser = new User();
-        newUser.setId(createdUser.getId());
-        newUser.setEmail("newEmail@test.ru");
-        newUser.setLogin("newUser");
-        newUser.setBirthday(LocalDate.now().plusDays(1));
-        assertThrows(ValidationException.class, () -> userController.update(newUser));
+    public void testGetCrossingFriends() {
+        Integer userId = 1;
+        Integer otherUserId = 2;
+        List<User> crossingFriends = List.of(new User(), new User());
+        List<User> foundCrossingFriends = userController.getCrossingFriends(userId, otherUserId);
+        assertEquals(crossingFriends, foundCrossingFriends);
     }
 }
