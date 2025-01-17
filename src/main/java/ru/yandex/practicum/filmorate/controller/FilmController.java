@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
-    final private FilmService filmService;
+    private final FilmService filmService;
 
     @Autowired
     public FilmController(FilmService filmService) {
