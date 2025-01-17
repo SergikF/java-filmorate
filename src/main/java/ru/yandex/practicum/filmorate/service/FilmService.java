@@ -83,9 +83,9 @@ public class FilmService implements FilmStorage {
 
     // Получаем список лучших фильмов
     public List<Film> listBestFilms(int count) {
-        return filmStorage.findAll().stream().
-                sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.findAll().stream()
+                        .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
+                        .limit(count)
+                        .collect(Collectors.toList());
     }
 }
