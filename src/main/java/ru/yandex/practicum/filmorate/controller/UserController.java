@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -76,5 +74,4 @@ public class UserController {
     public List<User> getCrossingFriends(@PathVariable Integer userId, @PathVariable Integer otherUserId) {
         return userService.crossingFriends(userId, otherUserId);
     }
-
 }

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -12,7 +11,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import java.util.List;
 
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -47,7 +45,7 @@ public class FilmController {
 
     // Получаем фильм по id
     @GetMapping("/{filmId}")
-    public Film getUserById(@PathVariable Integer filmId) {
+    public Film getFilmById(@PathVariable Integer filmId) {
         return filmService.getById(filmId);
     }
 
@@ -66,7 +64,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getlistBestFilms(@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> getListBestFilms(@RequestParam(defaultValue = "10") Integer count) {
         return filmService.listBestFilms(count);
     }
 

@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -17,20 +15,16 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-@Component
 public class UserService implements UserStorage {
 
     private final UserStorage userStorage;
 
-    @Autowired
     public UserService(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
-    // нашёл только такой способ совместить хранилище inMemoryUserStorage и интерфейс UserStorage
     @Override
     public User create(User user) {
-
         return userStorage.create(user);
     }
 
@@ -51,33 +45,17 @@ public class UserService implements UserStorage {
 
     // Добавляем друга в список друзей
     public void addFriend(Integer idUser, Integer idFriend) {
-        if (idUser == idFriend) {
+        if (idUser.equals(idFriend)) {
             throw new ValidationException("Нельзя добавить себя в друзья");
         }
-        if (idUser == null || idFriend == null) {
-            throw new ValidationException("Не указаны id пользователя или его друга");
-        }
-        if (userStorage.getById(idUser) == null) {
-            throw new NotFoundException("Пользователь с id = " + idUser + " не найден");
-        }
-        if (userStorage.getById(idFriend) == null) {
-            throw new NotFoundException("Друг с id = " + idFriend + " не найден");
-        }
+        checkForFriend(idUser, idFriend);
         userStorage.getById(idUser).addFriend(idFriend);
         userStorage.getById(idFriend).addFriend(idUser);
     }
 
     // Удаляем друга из списка друзей
     public void deleteFriend(Integer idUser, Integer idFriend) {
-        if (idUser == null || idFriend == null) {
-            throw new ValidationException("Не указаны id пользователя или его друга");
-        }
-        if (userStorage.getById(idUser) == null) {
-            throw new NotFoundException("Пользователь с id = " + idUser + " не найден");
-        }
-        if (userStorage.getById(idFriend) == null) {
-            throw new NotFoundException("Друг с id = " + idFriend + " не найден");
-        }
+        checkForFriend(idUser, idFriend);
         userStorage.getById(idUser).removeFriend(idFriend);
         userStorage.getById(idFriend).removeFriend(idUser);
     }
@@ -99,5 +77,18 @@ public class UserService implements UserStorage {
         return userStorage.findAll().stream()
                 .filter(u -> commonFriends.contains(u.getId()))
                 .collect(Collectors.toList());
+    }
+
+    // Проверка для установки или удаления друзей
+    private void checkForFriend(Integer idUser, Integer idFriend) {
+        if (idUser == null || idFriend == null) {
+            throw new ValidationException("Не указаны id пользователя или его друга");
+        }
+        if (userStorage.getById(idUser) == null) {
+            throw new NotFoundException("Пользователь с id = " + idUser + " не найден");
+        }
+        if (userStorage.getById(idFriend) == null) {
+            throw new NotFoundException("Друг с id = " + idFriend + " не найден");
+        }
     }
 }
