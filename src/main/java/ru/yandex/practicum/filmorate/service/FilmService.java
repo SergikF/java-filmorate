@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -15,31 +14,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class FilmService implements FilmStorage {
+@RequiredArgsConstructor
+public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage userStorage) {
-        this.userStorage = userStorage;
-        this.filmStorage = filmStorage;
-    }
-
-    @Override
     public Film create(Film film) {
         return filmStorage.create(film);
     }
 
-    @Override
     public Film update(Film film) {
         return filmStorage.update(film);
     }
 
-    @Override
     public Film getById(Integer id) {
         return filmStorage.getById(id);
     }
 
-    @Override
     public List<Film> findAll() {
         return filmStorage.findAll();
     }

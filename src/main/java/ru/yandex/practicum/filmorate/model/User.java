@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Data
 @Slf4j
+@Builder(toBuilder = true)
 public class User {
     private Integer id;
 

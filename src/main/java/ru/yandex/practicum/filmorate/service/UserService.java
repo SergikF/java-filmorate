@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.HashSet;
@@ -15,30 +15,23 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserService implements UserStorage {
+@RequiredArgsConstructor
+public class UserService {
 
     private final UserStorage userStorage;
 
-    public UserService(InMemoryUserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
-
-    @Override
     public User create(User user) {
         return userStorage.create(user);
     }
 
-    @Override
     public User update(User user) {
         return userStorage.update(user);
     }
 
-    @Override
     public User getById(Integer id) {
         return userStorage.getById(id);
     }
 
-    @Override
     public List<User> findAll() {
         return userStorage.findAll();
     }
