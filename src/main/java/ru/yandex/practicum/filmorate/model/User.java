@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Data
 @Slf4j
-@Builder(toBuilder = true)
 public class User {
     private Integer id;
 
