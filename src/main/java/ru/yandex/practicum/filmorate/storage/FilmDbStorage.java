@@ -64,7 +64,7 @@ public class FilmDbStorage implements FilmStorage {
                 jdbc.update("INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
                         keyHolder.getKey().intValue(), genre.getId());
             } catch (DuplicateKeyException e) {
-                log.error("DuplicateKeyException", e);
+                log.error("Duplicate key exception");
             }
         }
         return film;
@@ -84,7 +84,7 @@ public class FilmDbStorage implements FilmStorage {
                 jdbc.update("INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
                         film.getId(), genre.getId());
             } catch (DuplicateKeyException e) {
-                log.error("DuplicateKeyException", e);
+                log.error("Duplicate key exception");
             }
         }
         return film;

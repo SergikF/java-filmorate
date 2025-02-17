@@ -22,7 +22,7 @@ public class GenreController {
     }
 
     // Получаем жанр по id
-    @GetMapping("/{Id}")
+    @GetMapping("/{id}")
     public Genre getById(@PathVariable Integer id) {
         return genreService.getById(id);
     }

@@ -21,7 +21,7 @@ public class LikeDbStorage {
         try {
             jdbc.update("INSERT INTO likes (film_id, user_id) VALUES (?, ?)", filmId, userId);
         } catch (DuplicateKeyException e) {
-            log.error("DuplicateKeyException", e);
+            log.error("DuplicateKeyException");
         }
     }
 
