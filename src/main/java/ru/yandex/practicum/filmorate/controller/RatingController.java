@@ -26,7 +26,7 @@ public class RatingController {
 
     // Получаем рейтинг по id
     @GetMapping("/{Id}")
-    public Rating getById(@PathVariable Integer Id) {
-        return ratingService.getById(Id);
+    public Rating getById(@PathVariable Integer id) {
+        return ratingService.getById(id);
     }
 }
