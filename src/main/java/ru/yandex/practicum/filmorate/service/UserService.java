@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FriendDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -17,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    private final UserStorage userStorage;
+    private final UserDbStorage userStorage;
+    private final FriendDbStorage friendStorage;
 
     public User create(User user) {
         return userStorage.create(user);
@@ -42,23 +43,21 @@ public class UserService {
             throw new ValidationException("Нельзя добавить себя в друзья");
         }
         checkForFriend(idUser, idFriend);
-        userStorage.getById(idUser).addFriend(idFriend);
-        userStorage.getById(idFriend).addFriend(idUser);
+        friendStorage.addFriend(idUser, idFriend);
     }
 
     // Удаляем друга из списка друзей
     public void deleteFriend(Integer idUser, Integer idFriend) {
         checkForFriend(idUser, idFriend);
-        userStorage.getById(idUser).removeFriend(idFriend);
-        userStorage.getById(idFriend).removeFriend(idUser);
+        friendStorage.deleteFriend(idUser, idFriend);
     }
 
     // Получаем список друзей
     public List<User> userFriends(Integer idUser) {
-        User user = userStorage.getById(idUser);
-        return userStorage.findAll().stream()
-                .filter(u -> user.getFriends().contains(u.getId()))
-                .collect(Collectors.toList());
+        if (userStorage.getById(idUser) == null) {
+            throw new NotFoundException("Пользователь с id = " + idUser + " не найден");
+        }
+        return userStorage.getFriends(idUser);
     }
 
     // Получаем общий список друзей

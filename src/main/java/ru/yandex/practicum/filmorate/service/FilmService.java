@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.LikeDbStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-    private final FilmStorage filmStorage;
+    private final FilmDbStorage filmStorage;
     private final UserStorage userStorage;
+    private final LikeDbStorage likeStorage;
 
     public Film create(Film film) {
         return filmStorage.create(film);
@@ -38,21 +40,21 @@ public class FilmService {
     // Ставим лайк фильму
     public void addLike(Integer idFilm, Integer idUser) {
         checkForLike(idFilm, idUser);
-        filmStorage.getById(idFilm).addLike(idUser);
+        likeStorage.addLike(idFilm, idUser);
     }
 
     // Убираем лайк фильму
     public void deleteLike(Integer idFilm, Integer idUser) {
         checkForLike(idFilm, idUser);
-        filmStorage.getById(idFilm).removeLike(idUser);
+        likeStorage.deleteLike(idFilm, idUser);
     }
 
     // Получаем список лучших фильмов
     public List<Film> listBestFilms(int count) {
         return filmStorage.findAll().stream()
-                        .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
-                        .limit(count)
-                        .collect(Collectors.toList());
+                .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     // проверка условий для установки и удаления лайка
