@@ -21,6 +21,7 @@ public class FriendDbStorage {
         try {
             jdbc.update("INSERT INTO friends (user_id, friend_id) VALUES (?, ?)", userId, friendId);
         } catch (DuplicateKeyException e) {
+            log.error("DuplicateKeyException", e);
         }
     }
 
