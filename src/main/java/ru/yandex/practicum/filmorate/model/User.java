@@ -2,14 +2,12 @@ package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Slf4j
 public class User {
     private Integer id;
 

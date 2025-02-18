@@ -21,11 +21,7 @@ public class RatingDbStorage {
     private final RatingRowMapper ratingRowMapper;
 
     public List<Rating> findAll() {
-        try {
-            return jdbc.query("SELECT * FROM mpa", ratingRowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Список жанров пуст");
-        }
+        return jdbc.query("SELECT * FROM mpa", ratingRowMapper);
     }
 
     public Rating getById(Integer id) {
@@ -35,7 +31,4 @@ public class RatingDbStorage {
             throw new NotFoundException("Рейтинг с id " + id + " не найден");
         }
     }
-
-
-
 }

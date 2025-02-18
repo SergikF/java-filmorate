@@ -16,7 +16,6 @@ import java.util.List;
 public class LikeDbStorage {
     private final JdbcTemplate jdbc;
 
-    // Ставим лайк фильму
     public void addLike(Integer filmId, Integer userId) {
         try {
             jdbc.update("INSERT INTO likes (film_id, user_id) VALUES (?, ?)", filmId, userId);
@@ -25,12 +24,10 @@ public class LikeDbStorage {
         }
     }
 
-    // Удаляем лайк фильма
     public void deleteLike(Integer filmId, Integer userId) {
         jdbc.update("DELETE FROM likes WHERE film_id = ? AND user_id = ?", filmId, userId);
     }
 
-    // Получаем список id пользователей, которые лайкнули фильм
     public List<Integer> getLikes(Integer filmId) {
         return jdbc.queryForList("SELECT user_id FROM likes WHERE film_id = ?",
                 Integer.class, filmId);

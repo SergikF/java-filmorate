@@ -5,14 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Slf4j
 public class Film {
     private Integer id;
 

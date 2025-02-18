@@ -15,10 +15,12 @@ public class RatingService {
     private final RatingDbStorage ratingStorage;
 
     public Rating getById(Integer id) {
+        log.info("get rating by id: {}", id);
         return ratingStorage.getById(id);
     }
 
     public List<Rating> findAll() {
+        log.info("get all ratings");
         return ratingStorage.findAll();
     }
 }

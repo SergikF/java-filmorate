@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,8 +14,8 @@ import ru.yandex.practicum.filmorate.storage.dbmapper.UserRowMapper;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 
-@Slf4j
 @Primary
 @Repository
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class UserDbStorage implements UserStorage {
             ps.setDate(4, user.getBirthday());
             return ps;
         }, keyHolder);
-        user.setId(keyHolder.getKey().intValue());
+        user.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         return user;
     }
 
@@ -53,11 +52,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        try {
-            return jdbc.query("SELECT * FROM users", userRowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Список пользователей пуст");
-        }
+        return jdbc.query("SELECT * FROM users", userRowMapper);
     }
 
     @Override

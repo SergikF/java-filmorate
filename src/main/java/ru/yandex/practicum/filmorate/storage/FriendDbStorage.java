@@ -16,7 +16,6 @@ import java.util.List;
 public class FriendDbStorage {
     private final JdbcTemplate jdbc;
 
-    // Отправка заявки на добавление в друзья
     public void addFriend(Integer userId, Integer friendId) {
         try {
             jdbc.update("INSERT INTO friends (user_id, friend_id) VALUES (?, ?)", userId, friendId);
@@ -25,12 +24,10 @@ public class FriendDbStorage {
         }
     }
 
-    // отзыв заявки на дружбу
     public void deleteFriend(Integer userId, Integer friendId) {
         jdbc.update("DELETE FROM friends WHERE user_id = ? AND friend_id = ?", userId, friendId);
     }
 
-    // Получение id всех друзей по id пользователя
     public List<Integer> getFriends(Integer userId) {
         return jdbc.queryForList("SELECT friend_id FROM friends WHERE user_id = ?",
                 Integer.class, userId);

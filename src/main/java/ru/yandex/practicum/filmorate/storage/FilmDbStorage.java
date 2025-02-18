@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.storage.dbmapper.FilmRowMapper;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +28,6 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbc;
     private final FilmRowMapper filmRowMapper;
 
-    // Добавление фильма
     @Override
     public Film create(Film film) {
         List<Integer> ratings = jdbc.queryForList("SELECT id FROM mpa", Integer.class);
@@ -38,9 +38,9 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         List<Integer> notFoundGenres = film.getGenres().stream()
-                .filter(genre -> !genres.contains(genre.getId()))
                 .map(Genre::getId)
-                .collect(Collectors.toList());
+                .filter(id -> !genres.contains(id))
+                .toList();
 
         if (!notFoundGenres.isEmpty()) {
             throw new NotFoundException("Жанры с id " + notFoundGenres + " не найдены");
@@ -58,7 +58,7 @@ public class FilmDbStorage implements FilmStorage {
             ps.setObject(5, film.getMpa().getId());
             return ps;
         }, keyHolder);
-        film.setId(keyHolder.getKey().intValue());
+        film.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
         for (Genre genre : film.getGenres()) {
             try {
                 jdbc.update("INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
@@ -70,7 +70,6 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    // Обновление фильма
     @Override
     public Film update(Film film) {
         int count = jdbc.update("UPDATE films SET name = ?, description = ?, duration = ?, release_date = ?, mpa = ? WHERE id = ?",
@@ -90,17 +89,11 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    // Выборка всех фильмов
     @Override
     public List<Film> findAll() {
-        try {
-            return jdbc.query("SELECT * FROM films", filmRowMapper);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Список фильмов пуст");
-        }
+        return jdbc.query("SELECT * FROM films", filmRowMapper);
     }
 
-    // Получение фильма по id
     @Override
     public Film getById(Integer id) {
         try {
